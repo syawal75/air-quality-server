@@ -236,8 +236,8 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 10000;
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`Air Quality API Server running on port ${port}`);
 });
