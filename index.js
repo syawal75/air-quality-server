@@ -201,18 +201,25 @@ app.get("/api/air-quality/forecast", async (req, res) => {
     const aqiData = await aqiResponse.json();
     const currentAqi = aqiData.feeds[0].field6 ? parseFloat(aqiData.feeds[0].field6) : 50;
     
-    const currentHour = new Date().getHours();
+    // Use Malaysia timezone (UTC+8)
+    const malaysiaTime = new Date(new Date().getTime() + (8 * 60 * 60 * 1000));
+    const currentHour = malaysiaTime.getUTCHours();
+    
+    // Find next 3-hour interval
+    const nextInterval = Math.ceil((currentHour + 1) / 3) * 3;
+    
     const forecast = [];
     
     for (let i = 0; i < 8; i++) {
-      const hour = (currentHour + i) % 24;
+      const forecastHour = (nextInterval + (i * 3)) % 24;
       const variation = (i * 2) - 5;
       const forecastAqi = Math.max(0, Math.min(500, currentAqi + variation));
       
       forecast.push({
-        hour,
+        hour: forecastHour,
         aqi: forecastAqi,
         status: getAQIStatus(forecastAqi),
+        timestamp: new Date(malaysiaTime.getTime() + (i * 3 * 60 * 60 * 1000)).toISOString()
       });
     }
     

@@ -8,3 +8,5 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: OPENWEATHER_API_KEY
+        sync: false
